@@ -3,3 +3,4 @@ MNIST_data/
 *.pyc
 *.raw
 saved_model/
+*.jsonl

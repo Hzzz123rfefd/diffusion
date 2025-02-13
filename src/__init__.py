@@ -1,4 +1,4 @@
-from src.model import Diffusion
+from src.model import Diffusion, DDPM
 from src.dataset import DatasetForImageGeneration
 
 
@@ -8,4 +8,5 @@ datasets = {
 
 models = {
     "diffusion":Diffusion,
+    "ddpm":DDPM
 }

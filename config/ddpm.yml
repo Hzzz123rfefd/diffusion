@@ -1,20 +1,21 @@
 # config.yml
 
 model_type:
-  diffusion
+  ddpm
 # mdoel args
 model:
   width: 32
   height: 32
   channel: 1
   time_dim: 256
-  noise_steps: 5000
+  noise_steps: 400
   beta_start: 0.0001
   beta_end: 0.02
+  drop_prob: 0.1
   device: cuda
 
 traininng:
-  batch_size: 16               
+  batch_size: 16              
   epochs: 1000          
   learning_rate: 0.0001   
   optimizer: Adam              
@@ -36,4 +37,4 @@ dataset:
 
 logging:
   log_interval: 100             
-  save_dir: "./saved_model/diffusion"   
+  save_dir: "./saved_model/ddpm"   

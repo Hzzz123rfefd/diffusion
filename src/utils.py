@@ -72,18 +72,30 @@ def recursive_collate_fn(batch):
     else:
         return default_collate(batch)
     
+def ddpm_schedules(beta1, beta2, T):
+    """
+    Returns pre-computed schedules for DDPM sampling, training process.
+    """
+    assert beta1 < beta2 < 1.0, "beta1 and beta2 must be in (0, 1)"
 
+    beta_t = (beta2 - beta1) * torch.arange(0, T + 1, dtype=torch.float32) / T + beta1
+    sqrt_beta_t = torch.sqrt(beta_t)
+    alpha_t = 1 - beta_t
+    log_alpha_t = torch.log(alpha_t)
+    alphabar_t = torch.cumsum(log_alpha_t, dim=0).exp()
 
-def calculate_psnr(img1, img2):
+    sqrtab = torch.sqrt(alphabar_t)
+    oneover_sqrta = 1 / torch.sqrt(alpha_t)
 
-    assert img1.shape == img2.shape, "输入图像的形状必须相同"
+    sqrtmab = torch.sqrt(1 - alphabar_t)
+    mab_over_sqrtmab_inv = (1 - alpha_t) / sqrtmab
 
-    img1 = img1.float()
-    img2 = img2.float()
-
-    mse = torch.mean((img1 - img2) ** 2)
-    if mse == 0:
-        return float('inf')  
-
-    psnr = 20 * torch.log10(255.0 / torch.sqrt(mse))
-    return psnr.item()
+    return {
+        "alpha_t": alpha_t,  # \alpha_t
+        "oneover_sqrta": oneover_sqrta,  # 1/\sqrt{\alpha_t}
+        "sqrt_beta_t": sqrt_beta_t,  # \sqrt{\beta_t}
+        "alphabar_t": alphabar_t,  # \bar{\alpha_t}
+        "sqrtab": sqrtab,  # \sqrt{\bar{\alpha_t}}
+        "sqrtmab": sqrtmab,  # \sqrt{1-\bar{\alpha_t}}
+        "mab_over_sqrtmab": mab_over_sqrtmab_inv,  # (1-\alpha_t)/\sqrt{1-\bar{\alpha_t}}
+    }

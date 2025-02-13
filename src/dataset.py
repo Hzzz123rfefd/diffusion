@@ -33,10 +33,10 @@ class DatasetForImageGeneration:
         return self.total_len
 
     def read_image(self, image_path):
-        image = cv2.imread(image_path)
+        image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
         resized_image = cv2.resize(image, (self.target_width, self.target_height), interpolation=cv2.INTER_LINEAR)
         if len(resized_image.shape) == 2:  
-            resized_image = np.expand_dims(image, axis=0)
+            resized_image = np.expand_dims(resized_image, axis=0)
         return resized_image
 
     def __getitem__(self, idx):
@@ -44,7 +44,8 @@ class DatasetForImageGeneration:
         image_path = self.dataset[idx]["image_path"]
         label =  self.dataset[idx]["label"]
         output["label"] = torch.tensor(label, dtype = torch.int64)
-        output["image"] = torch.from_numpy(self.read_image(image_path)).permute(2,0,1) / 255.0
+        output["image"] = torch.from_numpy(self.read_image(image_path)) / 255.0
+        # output["image"] = torch.from_numpy(self.read_image(image_path)).permute(2,0,1) / 255.0
         return output
     
     def collate_fn(self,batch):

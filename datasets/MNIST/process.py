@@ -37,7 +37,7 @@ def main(args):
         os.makedirs(args.train_dir)
     all_data = []
     for label in range(10): 
-        each_label_max_data_len = 100
+        each_label_max_data_len = 500
         label_dir = os.path.join(args.output_dir, str(label))
         if os.path.exists(label_dir):
             for img_name in os.listdir(label_dir):

@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 from src.dataset import *
 from src import datasets,models
 from src.utils import *
-
+from torchvision.utils import save_image
 
 def main(args):
     config = load_config(args.model_config_path)
@@ -16,20 +16,17 @@ def main(args):
     model.load_pretrained(config["logging"]["save_dir"])
 
     # 生成图片
-    image = model.generate_image("cuda")
-    image = image.cpu().detach().numpy()
-    image = image * 255
-    image = image.astype(np.uint8)  #(b,c,h,w)
-    # 保存图片
-    with open("generate_image.raw", "wb") as file: 
-        for h in range(image.shape[2]):
-            for w in range(image.shape[3]):
-                for c in range(image.shape[1]):
-                    file.write(image[0,c,h,w].tobytes())
-                file.write(b'\xFF')
+    model.eval()
+    with torch.no_grad():
+        image = model.sample(guide_w = 2)
+        image = image.cpu().detach().numpy()
+        image = image * 255
+        image = image.astype(np.uint8)  #(b,c,h,w)
+        image = image.squeeze(0).squeeze(0)
+        cv2.imwrite("output.png", image)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_config_path", type=str, default = "config/diffusion.yml")
+    parser.add_argument("--model_config_path", type=str, default = "config/ddpm.yml")
     args = parser.parse_args()
     main(args)

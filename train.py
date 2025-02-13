@@ -47,6 +47,6 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_config_path", type=str, default = "config/diffusion.yml")
+    parser.add_argument("--model_config_path", type=str, default = "config/ddpm.yml")
     args = parser.parse_args()
     main(args)
