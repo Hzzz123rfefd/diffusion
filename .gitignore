@@ -4,3 +4,6 @@ MNIST_data/
 *.raw
 saved_model/
 *.jsonl
+*.pth
+MNIST/
+__pycache__

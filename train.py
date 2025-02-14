@@ -4,13 +4,15 @@ from torch.utils.data import DataLoader
 from src.dataset import *
 from src import datasets,models
 from src.utils import *
-
+from torchvision.datasets import MNIST
+from torchvision import transforms
+from torch.utils.data import DataLoader, random_split
 
 def main(args):
     config = load_config(args.model_config_path)
 
     """ get net struction"""
-    net = models[config["model_type"]](**config["model"])
+    net = models[config["model_type"]](**config["model"]).to(config["traininng"]["device"])
 
     """get data loader"""
     train_datasets = datasets[config["dataset_type"]](**config["dataset"], data_type = "train")
@@ -41,12 +43,12 @@ def main(args):
         lr = config["traininng"]["learning_rate"],
         weight_decay = config["traininng"]["weight_decay"],
         total_epoch = config["traininng"]["epochs"],
-        save_checkpoint_step = config["logging"]["log_interval"],
+        eval_interval = config["logging"]["eval_interval"],
         save_model_dir = config["logging"]["save_dir"]
     )
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_config_path", type=str, default = "config/ddpm.yml")
+    parser.add_argument("--model_config_path", type=str, default = "config/cddpm.yml")
     args = parser.parse_args()
     main(args)
