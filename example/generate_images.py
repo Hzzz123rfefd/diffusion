@@ -14,17 +14,17 @@ def main(args):
     """ get net struction"""
     model = models[config["model_type"]](**config["model"])
     model.load_pretrained(config["logging"]["save_dir"])
-    # model.load_state_dict(torch.load("data/diffusion_outputs10/model_4.pth"))
 
-    # 生成图片
-    model.eval()
-    with torch.no_grad():
-        image = model.sample(label = 1)
-        for i in range(10):
-            save_image(image[i:i+1,:,:,:], f"output{i}.png")
+    if args.label == -1:
+        image = model.sample()
+    else :
+        image = model.sample(label = args.label)
+    save_image(image[0:1,:,:,:], args.save_image_path)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_config_path", type=str, default = "config/cddpm.yml")
+    parser.add_argument("--save_image_path", type=str, default = "assets/output.png")
+    parser.add_argument("--label", type = int, default = -1)
     args = parser.parse_args()
     main(args)
