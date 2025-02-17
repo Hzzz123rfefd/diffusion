@@ -1,4 +1,3 @@
-*.png
 MNIST_data/
 *.pyc
 *.raw
