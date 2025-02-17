@@ -4,8 +4,8 @@ diffusion model for image generation
 ## Installation
 Install the packages required for development.
 ```bash
-conda create -n yolov8 python=3.10
-conda activate yolov8
+conda create -n diffusion python=3.10
+conda activate diffusion
 git clone https://github.com/Hzzz123rfefd/diffusion.git
 cd diffusion
 pip install -r requirements.txt
